@@ -56,3 +56,17 @@ PRIMARY KEY (NroReserva, IdRestaurante, DataHora),
 FOREIGN KEY (NroReserva) REFERENCES Reserva(NroReserva),
 FOREIGN KEY (IdRestaurante) REFERENCES Restaurante(IdRestaurante)
 );
+
+ALTER TABLE Cliente
+ADD Profissao VARCHAR(30) NOT NULL,
+ADD Obs VARCHAR(500);
+
+ALTER TABLE Cliente
+DROP Profissao,
+DROP Obs;
+
+ALTER TABLE Cliente
+MODIFY COLUMN
+Nome VARCHAR(40) UNIQUE,
+MODIFY COLUMN
+Sexo CHAR(2) NOT NULL;
