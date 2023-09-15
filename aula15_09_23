@@ -16,3 +16,43 @@ Uf CHAR(2) DEFAULT 'PR',
 Pais VARCHAR(20) DEFAULT 'Brasil',
 Tipo INT CHECK(Tipo IN(1,2))
 );
+
+
+create table Reserva(
+NroReserva INT PRIMARY KEY AUTO_INCREMENT,
+IdCliente INT,
+DataHora DATETIME NOT NULL,
+Periodo TINYINT NOT NULL,
+FOREIGN KEY (IdCliente) REFERENCES Cliente(IdCliente)
+);
+
+create table Telefone(
+Numero VARCHAR(20),
+IdCliente INT,
+PRIMARY KEY (Numero, IdCliente),
+FOREIGN KEY (IdCliente)
+REFERENCES Cliente(IdCliente)
+);
+
+create table Ocupacao(
+NroReserva INT PRIMARY KEY,
+Entrada DATETIME, 
+Saida DATETIME,
+FOREIGN KEY (NroReserva) REFERENCES Reserva(NroReserva)
+);
+
+create table Restaurante(
+IdRestaurante INT PRIMARY KEY,
+Prato VARCHAR(50), 
+Preco DECIMAL(5,2)
+);	
+
+CREATE TABLE OcupacaoRestaurante (
+NroReserva INT,
+IdRestaurante INT,
+DataHora DATETIME,
+Quantidade TINYINT,
+PRIMARY KEY (NroReserva, IdRestaurante, DataHora),
+FOREIGN KEY (NroReserva) REFERENCES Reserva(NroReserva),
+FOREIGN KEY (IdRestaurante) REFERENCES Restaurante(IdRestaurante)
+);
