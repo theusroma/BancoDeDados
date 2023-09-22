@@ -1,0 +1,32 @@
+CREATE DATABASE Cliente;
+USE Cliente;
+
+CREATE TABLE Cliente (
+	IdCliente INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Sexo CHAR(1),
+    DtaNasc DATETIME NOT NULL
+    );
+    
+    
+INSERT INTO Cliente
+(IdCliente, Nome, Sexo, DtaNasc)
+VALUES
+(1, 'Evandro Zatti', 'M', '1976-01-22');
+
+INSERT INTO Cliente
+(IdCliente, Nome, Sexo, DtaNasc)
+VALUES
+(2, 'Augusta Ada Bryon King', 'F', '1976-01-22');
+
+SELECT Nome, Sexo, IdCliente FROM Cliente; 
+
+SELECT DISTINCT Nome FROM Cliente;
+
+SELECT DISTINCT Andar FROM Quarto;
+
+select*from Cliente ORDER BY Nome;
+
+
+
+/*  SELECT NroQuarto, VlrDiaria, VlrDiaria * 2 FROM Quarto  */
