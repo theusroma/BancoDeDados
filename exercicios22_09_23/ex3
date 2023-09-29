@@ -1,0 +1,39 @@
+create database hotel;
+use hotel;
+
+
+
+create table Quarto (
+IdQuarto INT PRIMARY KEY AUTO_INCREMENT,
+Andar INT,
+VlrDiaria INT,
+NumQuarto INT
+);
+
+
+INSERT INTO Quarto
+(IdQuarto, Andar, VlrDiaria, NumQuarto)
+VALUES
+(1, 1, 100, 54);
+
+INSERT INTO Quarto
+(IdQuarto, Andar, VlrDiaria, NumQuarto)
+VALUES
+(2, 3, 300, 152);
+
+INSERT INTO Quarto
+(IdQuarto, Andar, VlrDiaria, NumQuarto)
+VALUES
+(3, 2, 200, 198);
+
+INSERT INTO Quarto
+(IdQuarto, Andar, VlrDiaria, NumQuarto)
+VALUES
+(4, 2, 200, 70);
+
+INSERT INTO Quarto
+(IdQuarto, Andar, VlrDiaria, NumQuarto)
+VALUES
+(5, 2, 250, 75);
+
+SELECT Andar, VlrDiaria FROM Quarto ORDER BY Andar DESC, VlrDiaria;
