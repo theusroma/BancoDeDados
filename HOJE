@@ -1,5 +1,5 @@
 /* Exclui o banco de dados "biblioteca", caso o banco de dados exista */
-drop database if exists biblioteca;
+drop database biblioteca;
 
 /* Cria o banco de dados "locadora", com definições com permitem a utilização de acentos e símbolos ("character set utf8mb4")
 e a comparação entre caracteres acentuados e que não diferenciam maiúsculas e minúsculas ("utf8mb4_0900_ai_ci") */
@@ -17,7 +17,8 @@ CREATE TABLE livro (
     titulo VARCHAR(150) NOT NULL,
     id_autor INT,
     id_categoria INT,
-    ano_publicacao YEAR
+    ano_publicacao YEAR,
+    exemplares_disponiveis INT
 );
 
 /* Cria a tabela autor. */
@@ -56,12 +57,12 @@ CREATE TABLE emprestimo (
 );
 
 /* Insere registros na tabela filmes */
-INSERT INTO livro (titulo, id_autor, id_categoria, ano_publicacao) VALUES
-('A Revolução dos Bichos', 1, 1, 1945),
-('Harry Potter e a Pedra Filosofal', 2, 2, 1997),
-('Assassinato no Expresso do Oriente', 3, 3, 1934),
-('Fundação', 4, 4, 1951),
-('O Senhor dos Anéis: A Sociedade do Anel', 5, 2, 1954);
+INSERT INTO livro (titulo, id_autor, id_categoria, ano_publicacao, exemplares_disponiveis) VALUES
+('A Revolução dos Bichos', 1, 1, 1945, 44),
+('Harry Potter e a Pedra Filosofal', 2, 2, 1997, 4),
+('Assassinato no Expresso do Oriente', 3, 3, 1934, 2),
+('Fundação', 4, 4, 1951, 8),
+('O Senhor dos Anéis: A Sociedade do Anel', 5, 2, 1954, 10);
 
 insert into categoria (nome) values
 	('Ficção'),
@@ -92,7 +93,31 @@ INSERT INTO emprestimo (id_membro, id_livro, data_emprestimo, data_devolucao) VA
 (4, 4, '2023-10-04', NULL), 
 (5, 5, '2023-10-05', '2024-10-05');
 
+/* 4 - Listar todos os autores cujo nome inicia com a letra ‘A’.*/
+select * from autor where nome like 'A%';
+
+/* 5 - Listar todos os livros cujo título contenha a palavra ‘sistema’.*/
+select * from livro where titulo like '%sistema%';
+
+/* 6 - Listar a chave primária e o título dos livros que foram publicados há mais de 5 anos.*/
+/* select *id, titulo from livro where ano_publicacao < year ; */
 
 
+/* 7 - Listar, em ordem alfabética por título, os livros que possuem menos de 5 exemplares disponíveis.*/
+select titulo from livro where exemplares_disponiveis < 5 order by titulo asc;
+
+/* 8 - */
+SELECT * 
+FROM livro 
+WHERE id NOT IN (SELECT id_livro FROM emprestimo);
+
+/* 9 - */
+UPDATE emprestimo 
+SET data_devolucao = CURDATE() 
+WHERE data_devolucao IS NOT NULL 
+AND id_membro IN (SELECT DISTINCT id_membro FROM emprestimo);
+
+/* 10 - */
+delete from membro where id not in (select distinct id_membro from emprestimo);
     
 
