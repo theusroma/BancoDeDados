@@ -1,0 +1,135 @@
+/*Partipantes:
+Leonardo Calegari Pech
+*/
+
+#Criação do Banco de Dados (1)
+create database biblioteca
+character set utf8mb4
+collate utf8mb4_0900_ai_ci;
+use biblioteca;
+
+#Criação de Tabelas (2)
+create table autor (
+	id_autor int primary key auto_increment not null,
+    nome_autor varchar(50) not null unique
+);
+
+create table categoria (
+	id_categoria int primary key auto_increment not null,
+    nome_categoria enum ('Romance', 'Terror', 'Drama', 'Aventura', 'Sci-Fi')
+);
+
+create table livros (
+	id_livro int primary key auto_increment not null,
+    titulo varchar(60) not null unique,
+    data_publicacao year not null,
+    n_exemplares int not null,
+    id_autor int not null,
+    id_categoria int not null,
+    foreign key (id_autor) references autor(id_autor),
+    foreign key (id_categoria) references categoria(id_categoria)
+);
+
+create table membro (
+	id_membro int primary key auto_increment not null,
+    nome_membro varchar(50) not null unique,
+    numero char(11) not null unique,
+    endereco varchar(100)
+);
+
+create table emprestimo (
+    id_emprestimo int primary key auto_increment not null,
+    data_emprestimo datetime not null,
+    data_devolucao_prevista datetime not null,
+    data_devolucao_real datetime,
+    id_membro int not null,
+    id_livro int not null,
+    id_categoria int not null,
+    foreign key (id_categoria) references categoria(id_categoria),
+    foreign key (id_livro) references livros(id_livro),
+    foreign key (id_membro) references membro(id_membro)
+);
+
+#Preenchimento das Tabelas (3)
+INSERT INTO autor (nome_autor) VALUES
+('J.K. Rowling'),
+('Stephen King'),
+('George R.R. Martin'),
+('Agatha Christie'),
+('Isaac Asimov');
+
+INSERT INTO categoria (nome_categoria) VALUES
+('Romance'),
+('Terror'),
+('Drama'),
+('Aventura'),
+('Sci-Fi');
+
+INSERT INTO livros (titulo, data_publicacao, n_exemplares, id_autor, id_categoria) VALUES
+('Harry Potter e a Pedra Filosofal', 1997, 10, 1, 1),
+('It: A Coisa', 1986, 5, 2, 2),
+('Game of Thrones', 1996, 8, 3, 3),
+('Assassinato no Expresso do Oriente', 1934, 6, 4, 3),
+('Fundação', 1951, 7, 5, 5);
+
+INSERT INTO membro (nome_membro, numero, endereco) VALUES
+('Alice Silva', '12345678901', 'Rua A, 123'),
+('Bruno Oliveira', '23456789012', 'Rua B, 456'),
+('Carla Santos', '34567890123', 'Rua C, 789'),
+('Daniela Ferreira', '45678901234', 'Rua D, 101'),
+('Eduardo Lima', '56789012345', 'Rua E, 202');
+
+insert into emprestimo (data_emprestimo, data_devolucao_prevista, id_membro, id_livro, id_categoria) values
+(now(), date_add(now(), interval 14 day), 1, 1, 1),
+(now(), date_add(now(), interval 14 day), 2, 2, 2),
+(now(), date_add(now(), interval 14 day), 3, 3, 3),
+(now(), date_add(now(), interval 14 day), 4, 4, 4),
+(now(), date_add(now(), interval 14 day), 5, 5, 5);
+
+#Selecionando todos os autores que iniciam com a letra 'A' (4)
+select id_autor, nome_autor from autor where nome_autor like 'a%';
+
+#Selecionando todos os livros que tenham a palavra 'Sistema' (5)
+select id_livro, titulo from livros where titulo like '%sistema%';
+
+#Selecionando todos os livros que tenham a data de publicação de mais de 5 anos atrás (6)
+select id_livro, titulo from livros where data_publicacao < YEAR(CURDATE()) - 5;
+
+#Selecionando todos os livros que tenham menos de 5 exemplares e ordenando por titulo (7)
+select titulo, data_publicacao from livros where n_exemplares <= 5 order by titulo asc;
+
+#Listando todos os livros que nunca foram emprestados (8)
+select livro.id_livro, livro.titulo from livro left join emprestimo on livro.id_livro = emprestimo.id_livro where emprestimo.id_emprestimo is null;
+
+#Alterando todas as datas de devolução real para a data atual (9)
+update emprestimo set data_devolucao_real = now();
+
+#Postergando todas as datas de devolução prevista para um mês a mais (10)
+update emprestimo set data_devolucao_prevista = date_add(data_devolucao_prevista, interval 30 day);
+
+#Excluindo todos os membros que nunca emprestaram um livro (11)
+delete from membro where id_membro not in (select distinct id_membro from emprestimo);
+
+#Excluindo todas as categorias que não possuem livros (12)
+delete from categoria where id_categoria not in (select distinct id_categoria from livro);
+
+
+#ATIVIDADE AVALIATIVA A2 - 3
+
+#Listando todos os livros cadastrados na base (1)
+select a.nome_autor, l.titulo from livros l join autor a on l.id_autor = a.id_autor;
+
+#Listando todos os emprestimos do ano atual (2)
+select e.data_emprestimo, l.titulo, m.nome_membro 
+from emprestimo e 
+join livros as l on e.id_livro = l.id_livro
+join membro as m on e.id_membro = m.id_membro
+where year(e.data_emprestimo) = year(curdate());
+
+#Listando o nome e o titulo de todos os livros cadastrados (3)
+select c.nome_categoria, l.titulo from categoria c join livros l on c.id_categoria = l.id_categoria;
+
+#Listando todos os livros que foram emprestados (4)
+select l.titulo, e.data_emprestimo, e.data_devolucao_real 
+from livros l join emprestimo e on l.id_livro = e.id_livro;
+
